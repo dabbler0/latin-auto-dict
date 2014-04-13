@@ -1,0 +1,5 @@
+#! /bin/bash
+
+WORDSPATH=/usr/local/words-1.97Ed
+
+( cd $WORDSPATH ; ./words $* )
