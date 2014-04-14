@@ -35,6 +35,11 @@ server = http.createServer (request, response) ->
       lookup.stdout.on 'data', (data) ->
         string += data.toString()
 
+        lines = string.split('\n')
+        if lines[lines.length - 2] is '                          MORE - hit RETURN/ENTER to continue'
+          lookup.stdin.write '\n'
+          string = lines[...-2].join '\n'
+
       lookup.on 'close', ->
         response.writeHead 200, 'Content-Type': 'text/plain'
         response.end string
