@@ -47,7 +47,13 @@
         lookup = spawn('./words', [requestURL.query.word]);
         string = '';
         lookup.stdout.on('data', function(data) {
-          return string += data.toString();
+          var lines;
+          string += data.toString();
+          lines = string.split('\n');
+          if (lines[lines.length - 2] === '                          MORE - hit RETURN/ENTER to continue') {
+            lookup.stdin.write('\n');
+            return string = lines.slice(0, -2).join('\n');
+          }
         });
         return lookup.on('close', function() {
           response.writeHead(200, {
