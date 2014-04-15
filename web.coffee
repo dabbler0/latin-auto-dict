@@ -1,3 +1,7 @@
+# Copyright (c) 2014 Anthony Bau
+#
+# MIT License
+
 {spawn} = require 'child_process'
 http = require 'http'
 url = require 'url'

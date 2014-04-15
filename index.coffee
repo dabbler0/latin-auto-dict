@@ -1,3 +1,6 @@
+# Copyright (c) 2014 Anthony Bau
+# MIT License
+
 $ ->
   textarea = $ '#hidden_textarea'
   display = $ '#display'
