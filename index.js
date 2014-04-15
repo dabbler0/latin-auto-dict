@@ -1,12 +1,13 @@
 (function() {
   $(function() {
-    var createLabeller, display, edit, editing, i, repopulate, select, textarea, _i;
+    var chpt, createLabeller, display, edit, editing, i, repopulate, select, textarea, _i;
     textarea = $('#hidden_textarea');
     display = $('#display');
     select = $('#select_el');
     edit = $('#edit_button');
+    chpt = $('#chapter_span');
     for (i = _i = 1; _i <= 32; i = ++_i) {
-      select.append($("<option value='" + i + "'>" + i + "</option>"));
+      select.append($("<option value='" + i + "'>Cat I Chpt. " + i + "</option>"));
     }
     createLabeller = function(word) {
       var el;
@@ -14,7 +15,7 @@
       el.addClass('wordspan');
       el.text(word);
       $.ajax({
-        url: '/search',
+        url: 'search',
         data: {
           word: word.toLowerCase().replace(/[^\w]/g, '')
         },
@@ -44,6 +45,8 @@
     };
     editing = false;
     edit.on('click', function() {
+      $('#title').hide();
+      $('#custom').show();
       if (editing) {
         edit.text('Edit');
         repopulate();
@@ -53,23 +56,28 @@
         edit.text('Done');
         display.css('display', 'none');
         textarea.css('display', 'block');
+        textarea.focus();
+        textarea[0].setSelectionRange(0, textarea.val().length - 1);
       }
       return editing = !editing;
     });
     select.on('change', function() {
       return $.ajax({
-        url: '/text',
+        url: 'text',
         data: {
           chapter: select.val()
         },
         success: function(data) {
+          $('#custom').hide();
+          $('#title').show();
+          chpt.text(select.val());
           textarea.val(data);
           return repopulate();
         }
       });
     });
     return $.ajax({
-      url: '/text',
+      url: 'text',
       data: {
         chapter: 1
       },

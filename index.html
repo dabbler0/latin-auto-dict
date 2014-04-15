@@ -32,12 +32,31 @@ body, html {
   height: 30px;
   top: -35px;
   left: -5px;
+  z-index: 256;
 }
 #edit_button {
   position: absolute;
   height: 30px;
   top: -35px;
   right: -5px;
+  z-index: 256;
+}
+#title, #custom {
+  position: absolute;
+  height: 40px;
+  font-size: 30px;
+  top: -45px;
+  text-align: center;
+  width: 100%;
+}
+#custom {
+  display: none;
+}
+#footer {
+  position: absolute;
+  bottom: 0; right: 0;
+  font-size: 18px;
+  padding: 5px;
 }
 </style>
 <link rel="stylesheet" href="tooltipster.css"/>
@@ -48,10 +67,14 @@ body, html {
 <div id="main">
   <select id="select_el">
   </select>
-  <button id="edit_button">Edit</button>
+  <div id="title">Cicero in Catilinam I, Chpt. <span id="chapter_span">1</span></div>
+  <div id="custom">Custom Text</div>
+  <button id="edit_button">Other Text</button>
   <textarea id="hidden_textarea" placeholder="Input latin"></textarea>
-  <div id="display">
+  <div id="display"></div>
 </div>
-</div>
+<div id="footer">
+  By <a href="http://dabbler0.github.io/hack-per-day">Anthony Bau</a>. Definitions from <a href="http://www.archives.nd.edu/words.htm">Whitaker's Words</a>.
+<div>
 </body>
 </html>

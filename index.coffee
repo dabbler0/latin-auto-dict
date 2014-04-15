@@ -6,8 +6,9 @@ $ ->
   display = $ '#display'
   select = $ '#select_el'
   edit = $ '#edit_button'
+  chpt = $ '#chapter_span'
 
-  select.append $ "<option value='#{i}'>#{i}</option>" for i in [1..32]
+  select.append $ "<option value='#{i}'>Cat I Chpt. #{i}</option>" for i in [1..32]
 
   createLabeller = (word) ->
     el = $ '<a>'
@@ -15,7 +16,7 @@ $ ->
     el.text word
 
     $.ajax
-      url: '/search'
+      url: 'search'
       data:
         word: word.toLowerCase().replace /[^\w]/g, ''
       success: (data) ->
@@ -40,30 +41,40 @@ $ ->
   
   editing = false
   edit.on 'click', ->
+    $('#title').hide()
+    $('#custom').show()
+
     if editing
       edit.text 'Edit'
       repopulate()
       display.css 'display', 'block'
       textarea.css 'display', 'none'
+
     else
       edit.text 'Done'
       display.css 'display', 'none'
       textarea.css 'display', 'block'
+      textarea.focus()
+
+      textarea[0].setSelectionRange 0, textarea.val().length - 1
 
     editing = not editing
 
   select.on 'change', ->
     $.ajax
-      url: '/text'
+      url: 'text'
       data:
         chapter: select.val()
       success: (data) ->
+        $('#custom').hide()
+        $('#title').show()
+        chpt.text select.val()
         textarea.val data
         repopulate()
 
   # Start with In Catilinam I, chap 1
   $.ajax
-    url: '/text'
+    url: 'text'
     data:
       chapter: 1
     success: (data) ->
