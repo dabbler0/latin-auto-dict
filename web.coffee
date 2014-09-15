@@ -33,7 +33,7 @@ server = http.createServer (request, response) ->
 
     when '/search'
       lookup = spawn './words', [requestURL.query.word]
-      
+
       string = ''
 
       lookup.stdout.on 'data', (data) ->
@@ -49,9 +49,18 @@ server = http.createServer (request, response) ->
         response.end string
 
     when '/text'
-      fs.readFile 'catilinamI.txt', (err, data) ->
+      if requestURL.query.book is 'catiline'
+        fs.readFile 'catilinamI.txt', (err, data) ->
+          response.writeHead 200, 'Content-Type': 'text/plain'
+          response.end data.toString().split('\n')[requestURL.query.chapter - 1]
+      else if requestURL.query.book is 'vergil'
+        fs.readFile 'aeneidI.txt', (err, data) ->
+          response.writeHead 200, 'Content-Type': 'text/plain'
+          response.end data.toString().split('\n')[requestURL.query.start - 1..requestURL.query.end - 1].join '\n'
+      else
         response.writeHead 200, 'Content-Type': 'text/plain'
-        response.end data.toString().split('\n')[requestURL.query.chapter - 1]
+        response.end 'Unknown'
+
 
 console.log 'listening on', process.env.PORT
 server.listen process.env.PORT

@@ -4,11 +4,18 @@
 $ ->
   textarea = $ '#hidden_textarea'
   display = $ '#display'
-  select = $ '#select_el'
+  select = $ '#select'
+  catilineSelect = $ '#cat_wrap'
+  vergilStartChapter = $ '#vergil_start_chapter'
+  vergilEndChapter = $ '#vergil_end_chapter'
+  catWrap = $ '#cat_wrap'
+  verWrap = $ '#ver_wrap'
   edit = $ '#edit_button'
   chpt = $ '#chapter_span'
 
-  select.append $ "<option value='#{i}'>Cat I Chpt. #{i}</option>" for i in [1..32]
+  wrappers = [catWrap, verWrap]
+
+  catWrap.append $ "<option value='#{i}'>#{i}</option>" for i in [1..32]
 
   createLabeller = (word) ->
     el = $ '<a>'
@@ -20,7 +27,7 @@ $ ->
       data:
         word: word.toLowerCase().replace /[^\w]/g, ''
       success: (data) ->
-        
+
         el.attr 'title', data
 
         el.tooltipster {
@@ -33,12 +40,12 @@ $ ->
         }
 
     return el
-  
+
   repopulate = ->
     display.html ''
-    display.append createLabeller(word + ' ') for word in textarea.val().split ' '
+    display.append createLabeller(word + ' ') for word in textarea.val().replace(/\n/g, '\n ').split ' '
     display.css 'color', '#000'
-  
+
   editing = false
   edit.on 'click', ->
     $('#title').hide()
@@ -60,11 +67,23 @@ $ ->
 
     editing = not editing
 
+  textName = null
+
   select.on 'change', ->
+    for wrapper in wrappers
+      wrapper.hide()
+    switch select.val()
+      when 'catiline'
+        catWrap.show()
+      when 'vergil'
+        verWrap.show()
+
+  catilineSelect.on 'change', ->
     $.ajax
       url: 'text'
       data:
-        chapter: select.val()
+        book: 'catiline'
+        chapter: Number catilineSelect.val()
       success: (data) ->
         $('#custom').hide()
         $('#title').show()
@@ -72,10 +91,30 @@ $ ->
         textarea.val data
         repopulate()
 
+  vergilChange = ->
+    console.log vergilStartChapter.val(), vergilEndChapter.val()
+    $.ajax
+      url: 'text'
+      data:
+        book: 'vergil'
+        start: Number vergilStartChapter.val()
+        end: Number vergilEndChapter.val()
+      success: (data) ->
+        $('#custom').hide()
+        $('#title').show()
+        chpt.text select.val()
+        textarea.val data
+        repopulate()
+
+  #vergilStartChapter.on 'change', vergilChange
+  #vergilEndChapter.on 'change', vergilChange
+  $('#vergil_go').on 'click', vergilChange
+
   # Start with In Catilinam I, chap 1
   $.ajax
     url: 'text'
     data:
+      book: 'catiline'
       chapter: 1
     success: (data) ->
       textarea.val data

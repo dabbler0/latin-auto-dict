@@ -1,13 +1,19 @@
 (function() {
   $(function() {
-    var chpt, createLabeller, display, edit, editing, i, repopulate, select, textarea, _i;
+    var catWrap, catilineSelect, chpt, createLabeller, display, edit, editing, i, repopulate, select, textName, textarea, verWrap, vergilChange, vergilEndChapter, vergilStartChapter, wrappers, _i;
     textarea = $('#hidden_textarea');
     display = $('#display');
-    select = $('#select_el');
+    select = $('#select');
+    catilineSelect = $('#cat_wrap');
+    vergilStartChapter = $('#vergil_start_chapter');
+    vergilEndChapter = $('#vergil_end_chapter');
+    catWrap = $('#cat_wrap');
+    verWrap = $('#ver_wrap');
     edit = $('#edit_button');
     chpt = $('#chapter_span');
+    wrappers = [catWrap, verWrap];
     for (i = _i = 1; _i <= 32; i = ++_i) {
-      select.append($("<option value='" + i + "'>Cat I Chpt. " + i + "</option>"));
+      catWrap.append($("<option value='" + i + "'>" + i + "</option>"));
     }
     createLabeller = function(word) {
       var el;
@@ -36,7 +42,7 @@
     repopulate = function() {
       var word, _j, _len, _ref;
       display.html('');
-      _ref = textarea.val().split(' ');
+      _ref = textarea.val().replace(/\n/g, '\n ').split(' ');
       for (_j = 0, _len = _ref.length; _j < _len; _j++) {
         word = _ref[_j];
         display.append(createLabeller(word + ' '));
@@ -61,11 +67,26 @@
       }
       return editing = !editing;
     });
+    textName = null;
     select.on('change', function() {
+      var wrapper, _j, _len;
+      for (_j = 0, _len = wrappers.length; _j < _len; _j++) {
+        wrapper = wrappers[_j];
+        wrapper.hide();
+      }
+      switch (select.val()) {
+        case 'catiline':
+          return catWrap.show();
+        case 'vergil':
+          return verWrap.show();
+      }
+    });
+    catilineSelect.on('change', function() {
       return $.ajax({
         url: 'text',
         data: {
-          chapter: select.val()
+          book: 'catiline',
+          chapter: Number(catilineSelect.val())
         },
         success: function(data) {
           $('#custom').hide();
@@ -76,9 +97,29 @@
         }
       });
     });
+    vergilChange = function() {
+      console.log(vergilStartChapter.val(), vergilEndChapter.val());
+      return $.ajax({
+        url: 'text',
+        data: {
+          book: 'vergil',
+          start: Number(vergilStartChapter.val()),
+          end: Number(vergilEndChapter.val())
+        },
+        success: function(data) {
+          $('#custom').hide();
+          $('#title').show();
+          chpt.text(select.val());
+          textarea.val(data);
+          return repopulate();
+        }
+      });
+    };
+    $('#vergil_go').on('click', vergilChange);
     return $.ajax({
       url: 'text',
       data: {
+        book: 'catiline',
         chapter: 1
       },
       success: function(data) {

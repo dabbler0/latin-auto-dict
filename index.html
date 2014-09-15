@@ -23,15 +23,24 @@ body, html {
 #display {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
+  overflow: auto;
 }
 .wordspan:hover {
   background-color: #FF0;
 }
-#select_el {
+#select {
   position: absolute;
   height: 30px;
   top: -35px;
   left: -5px;
+  max-width: 150px;
+  z-index: 256;
+}
+#wrap-wrap {
+  position: absolute;
+  height: 30px;
+  top: -35px;
+  left: 150px;
   z-index: 256;
 }
 #edit_button {
@@ -58,6 +67,13 @@ body, html {
   font-size: 18px;
   padding: 5px;
 }
+#vergil_start_chapter, #vergil_end_chapter, #vergil_go, #cat_wrap {
+  max-width: 50px;
+  height: 30px;
+}
+#ver_wrap input, #ver_wrap button {
+  vertical-align: top;
+}
 </style>
 <link rel="stylesheet" href="tooltipster.css"/>
 <script src="jquery.js"></script>
@@ -65,9 +81,19 @@ body, html {
 </head>
 <body>
 <div id="main">
-  <select id="select_el">
+  <select id="select">
+    <option value="catiline">Cicero in Catilinam I</option>
+    <option value="vergil">The Aeneid, Book I</option>
   </select>
-  <div id="title">Cicero in Catilinam I, Chpt. <span id="chapter_span">1</span></div>
+  <div id="wrap-wrap">
+    <select id="cat_wrap">
+    </select>
+    <div id="ver_wrap" style="display:none">
+      <input id="vergil_start_chapter" placeholder="Begin line"/>
+      <input id="vergil_end_chapter" placeholder="End line"/>
+      <button id="vergil_go">Go</button>
+    </div>
+  </div>
   <div id="custom">Custom Text</div>
   <button id="edit_button">Other Text</button>
   <textarea id="hidden_textarea" placeholder="Input latin"></textarea>

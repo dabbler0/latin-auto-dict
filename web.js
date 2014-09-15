@@ -62,12 +62,26 @@
           return response.end(string);
         });
       case '/text':
-        return fs.readFile('catilinamI.txt', function(err, data) {
+        if (requestURL.query.book === 'catiline') {
+          return fs.readFile('catilinamI.txt', function(err, data) {
+            response.writeHead(200, {
+              'Content-Type': 'text/plain'
+            });
+            return response.end(data.toString().split('\n')[requestURL.query.chapter - 1]);
+          });
+        } else if (requestURL.query.book === 'vergil') {
+          return fs.readFile('aeneidI.txt', function(err, data) {
+            response.writeHead(200, {
+              'Content-Type': 'text/plain'
+            });
+            return response.end(data.toString().split('\n').slice(requestURL.query.start - 1, +(requestURL.query.end - 1) + 1 || 9e9).join('\n'));
+          });
+        } else {
           response.writeHead(200, {
             'Content-Type': 'text/plain'
           });
-          return response.end(data.toString().split('\n')[requestURL.query.chapter - 1]);
-        });
+          return response.end('Unknown');
+        }
     }
   });
 
