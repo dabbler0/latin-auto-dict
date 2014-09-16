@@ -17,6 +17,11 @@ $ ->
 
   catWrap.append $ "<option value='#{i}'>#{i}</option>" for i in [1..32]
 
+  createSpan = (word) ->
+    el = $ '<span>'
+    el.text word
+    return el
+
   createLabeller = (word) ->
     el = $ '<a>'
     el.addClass 'wordspan'
@@ -43,7 +48,11 @@ $ ->
 
   repopulate = ->
     display.html ''
-    display.append createLabeller(word + ' ') for word in textarea.val().replace(/\n/g, '\n ').split ' '
+    for word in textarea.val().split /\b/
+      if word.match(/^\w*$/)?
+        display.append createLabeller(word)
+      else
+        display.append createSpan(word)
     display.css 'color', '#000'
 
   editing = false

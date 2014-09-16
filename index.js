@@ -1,6 +1,6 @@
 (function() {
   $(function() {
-    var catWrap, catilineSelect, chpt, createLabeller, display, edit, editing, i, repopulate, select, textName, textarea, verWrap, vergilChange, vergilEndChapter, vergilStartChapter, wrappers, _i;
+    var catWrap, catilineSelect, chpt, createLabeller, createSpan, display, edit, editing, i, repopulate, select, textName, textarea, verWrap, vergilChange, vergilEndChapter, vergilStartChapter, wrappers, _i;
     textarea = $('#hidden_textarea');
     display = $('#display');
     select = $('#select');
@@ -15,6 +15,12 @@
     for (i = _i = 1; _i <= 32; i = ++_i) {
       catWrap.append($("<option value='" + i + "'>" + i + "</option>"));
     }
+    createSpan = function(word) {
+      var el;
+      el = $('<span>');
+      el.text(word);
+      return el;
+    };
     createLabeller = function(word) {
       var el;
       el = $('<a>');
@@ -42,10 +48,14 @@
     repopulate = function() {
       var word, _j, _len, _ref;
       display.html('');
-      _ref = textarea.val().replace(/\n/g, '\n ').split(' ');
+      _ref = textarea.val().split(/\b/);
       for (_j = 0, _len = _ref.length; _j < _len; _j++) {
         word = _ref[_j];
-        display.append(createLabeller(word + ' '));
+        if (word.match(/^\w*$/) != null) {
+          display.append(createLabeller(word));
+        } else {
+          display.append(createSpan(word));
+        }
       }
       return display.css('color', '#000');
     };
